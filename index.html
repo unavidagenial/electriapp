@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIGES-ELEC | Gestión y Seguridad Eléctrica</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- ============================
+         MODAL DE SEGURIDAD INICIAL
+         ============================ -->
+    <div id="modal-seguridad" class="modal-overlay">
+        <div class="modal-security">
+            <div class="security-stripe"></div>
+            <div class="security-body">
+                <div class="safety-icon-wrap">
+                    <span class="safety-bolt">⚡</span>
+                </div>
+                <h2>PROTOCOLO DE SEGURIDAD</h2>
+                <p class="security-sub">Normativa obligatoria antes de operar</p>
+
+                <div class="checklist-wrap">
+                    <label class="check-item">
+                        <input type="checkbox" id="chk-epp-ui">
+                        <span class="check-box"></span>
+                        <span>EPP completo: casco dieléctrico, guantes Clase 00/0, calzado de seguridad</span>
+                    </label>
+                    <label class="check-item">
+                        <input type="checkbox" id="chk-tension-ui">
+                        <span class="check-box"></span>
+                        <span>Ausencia de tensión verificada con tester o revelador</span>
+                    </label>
+                    <label class="check-item">
+                        <input type="checkbox" id="chk-bloqueo-ui">
+                        <span class="check-box"></span>
+                        <span>Bloqueo y señalización de tableros (tarjetas de consignación)</span>
+                    </label>
+                </div>
+
+                <p class="warning-note">Al confirmar, declara bajo juramento profesional que ha mitigado los riesgos activos.</p>
+
+                <button id="btn-aceptar-seguridad" class="btn btn-unlock" disabled>
+                    <span class="lock-icon">🔒</span>
+                    CONFIRMAR Y DESBLOQUEAR
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================
+         APLICACIÓN PRINCIPAL
+         ============================ -->
+    <div id="app-container" class="app-container app-blur">
+
+        <!-- HEADER -->
+        <header class="app-header">
+            <div class="header-brand">
+                <span class="brand-bolt">⚡</span>
+                <div>
+                    <h1 class="brand-name">SIGES-ELEC</h1>
+                    <span class="brand-tag">Matrícula Profesional Verificada</span>
+                </div>
+            </div>
+            <div class="header-status">
+                <span class="status-dot"></span>
+                <span>Operando Seguro</span>
+            </div>
+        </header>
+
+        <!-- PANEL PRINCIPAL -->
+        <main class="main-panel">
+
+            <!-- BARRA DE BÚSQUEDA + HISTORIAL (del boceto: search + botón historial) -->
+            <section class="search-section">
+                <div class="search-wrap">
+                    <span class="search-icon-inner">🔍</span>
+                    <input type="text" id="input-busqueda" placeholder="Buscar por nombre o ID de cliente..." autocomplete="off">
+                    <button id="btn-limpiar-busqueda" class="btn-clear hidden">✕</button>
+                </div>
+                <button id="btn-historial" class="btn btn-outline">
+                    📋 Historial
+                </button>
+            </section>
+
+            <!-- ACCIONES PRINCIPALES (del boceto: Agregar Cliente + Datos) -->
+            <section class="actions-section">
+                <button id="btn-abrir-alta" class="btn btn-primary-action">
+                    <span class="btn-icon">＋</span>
+                    <span>Agregar Cliente</span>
+                </button>
+                <button id="btn-exportar" class="btn btn-secondary-action">
+                    <span class="btn-icon">📥</span>
+                    <span>Exportar PDF</span>
+                </button>
+            </section>
+
+            <!-- LISTA DE TRABAJOS CON SEMÁFORO DE PRIORIDAD (del boceto) -->
+            <section class="jobs-section">
+                <div class="section-header">
+                    <h2>Trabajos en Curso</h2>
+                    <div class="legend-semaforo">
+                        <span class="leg-dot dot-red"></span><span>Riesgo Alto</span>
+                        <span class="leg-dot dot-amber"></span><span>Riesgo Bajo</span>
+                        <span class="leg-dot dot-green"></span><span>Seguro</span>
+                    </div>
+                </div>
+                <div id="contenedor-resultados" class="jobs-list">
+                    <div class="empty-state">
+                        <p>Use el buscador o muestre todos los registros.</p>
+                        <button id="btn-mostrar-todos" class="btn btn-ghost">Ver todos los clientes</button>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- ============================
+         MODAL FORMULARIO CLIENTE
+         (del boceto: Datos → Contacto + Ubicación + Descripción + checkbox Detalles)
+         ============================ -->
+    <div id="modal-formulario" class="modal-overlay hidden">
+        <div class="modal-form">
+            <div class="modal-form-header">
+                <h3 id="form-title">Agregar Cliente</h3>
+                <button id="btn-cerrar-form" class="btn-close">✕</button>
+            </div>
+
+            <form id="form-cliente-trabajo" autocomplete="off">
+                <input type="hidden" id="form-id">
+
+                <!-- BLOQUE: + DATOS (contacto + ubicación) -->
+                <div class="form-block">
+                    <div class="form-block-label">
+                        <span class="block-num">01</span> Datos del Cliente
+                    </div>
+                    <div class="form-row-2">
+                        <div class="form-field">
+                            <label for="form-nombre">Nombre Completo</label>
+                            <input type="text" id="form-nombre" required placeholder="Ej. Juan Pérez">
+                        </div>
+                        <div class="form-field">
+                            <label for="form-telefono">Contacto / Teléfono</label>
+                            <input type="tel" id="form-telefono" required placeholder="+54 9 381 000-0000">
+                        </div>
+                    </div>
+                    <div class="form-field">
+                        <label for="form-direccion">Ubicación / Dirección</label>
+                        <input type="text" id="form-direccion" required placeholder="Ej. Av. Siempreviva 742, Tucumán">
+                    </div>
+                </div>
+
+                <!-- BLOQUE: DESCRIPCIÓN + checkbox Detalles de los arreglos -->
+                <div class="form-block">
+                    <div class="form-block-label">
+                        <span class="block-num">02</span> Descripción del Trabajo
+                    </div>
+                    <div class="form-field">
+                        <label for="form-descripcion">Descripción de la avería o trabajo</label>
+                        <textarea id="form-descripcion" required placeholder="Detalle técnico de la intervención eléctrica..."></textarea>
+                    </div>
+                    <label class="check-item check-item-form">
+                        <input type="checkbox" id="chk-detalles-arreglos">
+                        <span class="check-box"></span>
+                        <span>Detalles de los arreglos relevados en campo</span>
+                    </label>
+                </div>
+
+                <!-- BLOQUE: PRIORIDAD SEMÁFORO + MONTO -->
+                <div class="form-block">
+                    <div class="form-block-label">
+                        <span class="block-num">03</span> Prioridad y Presupuesto
+                    </div>
+                    <div class="form-row-2">
+                        <div class="form-field">
+                            <label for="form-seguridad">Prioridad / Nivel de Riesgo</label>
+                            <div class="select-semaforo-wrap">
+                                <select id="form-seguridad" required>
+                                    <option value="SEGURO">🟢 SEGURO — Instalación normalizada</option>
+                                    <option value="RIESGO_BAJO">🟡 RIESGO BAJO — Falta mantenimiento</option>
+                                    <option value="RIESGO_ALTO">🔴 RIESGO ALTO — Sin tierra / Térmicas obsoletas</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-field">
+                            <label for="form-monto">Monto Estimado ($)</label>
+                            <input type="number" id="form-monto" step="0.01" min="0" required placeholder="0.00">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" id="btn-cancelar-form" class="btn btn-ghost">Cancelar</button>
+                    <button type="submit" class="btn btn-save">Guardar Registro</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL HISTORIAL -->
+    <div id="modal-historial" class="modal-overlay hidden">
+        <div class="modal-form">
+            <div class="modal-form-header">
+                <h3>Historial Completo</h3>
+                <button id="btn-cerrar-historial" class="btn-close">✕</button>
+            </div>
+            <div id="historial-contenido" class="historial-list"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
