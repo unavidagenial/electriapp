@@ -6,7 +6,12 @@
     <title>SIGES-ELEC | Gestión y Seguridad Eléctrica</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Librerías para Exportar PDF Nativo del Historial -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -75,45 +80,92 @@
         <!-- PANEL PRINCIPAL -->
         <main class="main-panel">
 
-            <!-- BARRA DE BÚSQUEDA + HISTORIAL (del boceto: search + botón historial) -->
+            <!-- BARRA DE BÚSQUEDA + FILTRO DE OFICIOS + BOTÓN HISTORIAL -->
             <section class="search-section">
                 <div class="search-wrap">
                     <span class="search-icon-inner">🔍</span>
-                    <input type="text" id="input-busqueda" placeholder="Buscar por nombre o ID de cliente..." autocomplete="off">
+                    <input type="text" id="input-busqueda" placeholder="Buscar por nombre, ID o dirección..." autocomplete="off">
                     <button id="btn-limpiar-busqueda" class="btn-clear hidden">✕</button>
                 </div>
+                
+                <!-- SEPARACIÓN POR OFICIOS -->
+                <div class="select-wrap-oficio">
+                    <select id="filtro-oficio" title="Filtrar por oficio">
+                        <option value="TODOS">Todos los Oficios</option>
+                        <option value="ELECTRICIDAD">⚡ Electricidad</option>
+                        <option value="PLOMERIA">🔧 Plomería</option>
+                        <option value="GAS_CLIMA">🔥 Gas / Clima</option>
+                        <option value="OTRO">🛠️ Otro Oficio</option>
+                    </select>
+                </div>
+
                 <button id="btn-historial" class="btn btn-outline">
-                    📋 Historial
+                    📋 Historial & PDF
                 </button>
             </section>
 
-            <!-- ACCIONES PRINCIPALES (del boceto: Agregar Cliente + Datos) -->
+            <!-- ACCIONES PRINCIPALES -->
             <section class="actions-section">
                 <button id="btn-abrir-alta" class="btn btn-primary-action">
                     <span class="btn-icon">＋</span>
-                    <span>Agregar Cliente</span>
+                    <span>Agregar Cliente / Trabajo</span>
                 </button>
                 <button id="btn-exportar" class="btn btn-secondary-action">
                     <span class="btn-icon">📥</span>
-                    <span>Exportar PDF</span>
+                    <span>Exportar Reporte Rápido</span>
                 </button>
             </section>
 
-            <!-- LISTA DE TRABAJOS CON SEMÁFORO DE PRIORIDAD (del boceto) -->
+            <!-- SECCIÓN 1: TRABAJOS EN CURSO (TABLA CON BOTONES) -->
             <section class="jobs-section">
                 <div class="section-header">
-                    <h2>Trabajos en Curso</h2>
+                    <h2>⏳ Trabajos en Curso</h2>
                     <div class="legend-semaforo">
-                        <span class="leg-dot dot-red"></span><span>Riesgo Alto</span>
-                        <span class="leg-dot dot-amber"></span><span>Riesgo Bajo</span>
-                        <span class="leg-dot dot-green"></span><span>Seguro</span>
+                        <span class="leg-dot dot-red"></span><span>Alto Costo / Riesgo</span>
+                        <span class="leg-dot dot-amber"></span><span>Medio</span>
+                        <span class="leg-dot dot-green"></span><span>Estándar</span>
                     </div>
                 </div>
-                <div id="contenedor-resultados" class="jobs-list">
-                    <div class="empty-state">
-                        <p>Use el buscador o muestre todos los registros.</p>
-                        <button id="btn-mostrar-todos" class="btn btn-ghost">Ver todos los clientes</button>
-                    </div>
+
+                <div class="table-responsive">
+                    <table class="app-table" id="tabla-en-curso">
+                        <thead>
+                            <tr>
+                                <th># ID / Cliente</th>
+                                <th>Oficio</th>
+                                <th>Presupuesto Base</th>
+                                <th>Control de Demora</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="body-en-curso">
+                            <!-- Inyección dinámica -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 2: TRABAJOS TERMINADOS (TABLA CON BOTONES) -->
+            <section class="jobs-section">
+                <div class="section-header">
+                    <h2>✅ Trabajos Terminados</h2>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="app-table" id="tabla-terminados">
+                        <thead>
+                            <tr>
+                                <th># ID / Cliente</th>
+                                <th>Oficio</th>
+                                <th>Total Facturado</th>
+                                <th>Finalizado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="body-terminados">
+                            <!-- Inyección dinámica -->
+                        </tbody>
+                    </table>
                 </div>
             </section>
 
@@ -121,20 +173,19 @@
     </div>
 
     <!-- ============================
-         MODAL FORMULARIO CLIENTE
-         (del boceto: Datos → Contacto + Ubicación + Descripción + checkbox Detalles)
+         MODAL FORMULARIO CLIENTE Y TRABAJO
          ============================ -->
     <div id="modal-formulario" class="modal-overlay hidden">
         <div class="modal-form">
             <div class="modal-form-header">
-                <h3 id="form-title">Agregar Cliente</h3>
+                <h3 id="form-title">Nuevo Trabajo Aceptado</h3>
                 <button id="btn-cerrar-form" class="btn-close">✕</button>
             </div>
 
             <form id="form-cliente-trabajo" autocomplete="off">
                 <input type="hidden" id="form-id">
 
-                <!-- BLOQUE: + DATOS (contacto + ubicación) -->
+                <!-- BLOQUE 1: DATOS CLIENTE -->
                 <div class="form-block">
                     <div class="form-block-label">
                         <span class="block-num">01</span> Datos del Cliente
@@ -142,7 +193,7 @@
                     <div class="form-row-2">
                         <div class="form-field">
                             <label for="form-nombre">Nombre Completo</label>
-                            <input type="text" id="form-nombre" required placeholder="Ej. Juan Pérez">
+                            <input type="text" id="form-nombre" required placeholder="Ej. Carlos Mendoza">
                         </div>
                         <div class="form-field">
                             <label for="form-telefono">Contacto / Teléfono</label>
@@ -151,45 +202,71 @@
                     </div>
                     <div class="form-field">
                         <label for="form-direccion">Ubicación / Dirección</label>
-                        <input type="text" id="form-direccion" required placeholder="Ej. Av. Siempreviva 742, Tucumán">
+                        <input type="text" id="form-direccion" required placeholder="Ej. Barrio Norte, Block B, Depto 4">
                     </div>
                 </div>
 
-                <!-- BLOQUE: DESCRIPCIÓN + checkbox Detalles de los arreglos -->
+                <!-- BLOQUE 2: OFICIO, DESCRIPCIÓN Y PLAZO -->
                 <div class="form-block">
                     <div class="form-block-label">
-                        <span class="block-num">02</span> Descripción del Trabajo
+                        <span class="block-num">02</span> Oficio y Plazo
                     </div>
+                    <div class="form-row-2">
+                        <div class="form-field">
+                            <label for="form-oficio">Oficio / Especialidad</label>
+                            <select id="form-oficio" required>
+                                <option value="ELECTRICIDAD">⚡ Electricidad</option>
+                                <option value="PLOMERIA">🔧 Plomería</option>
+                                <option value="GAS_CLIMA">🔥 Gas / Climatización</option>
+                                <option value="OTRO">🛠️ Otro Oficio</option>
+                            </select>
+                        </div>
+                        <div class="form-field">
+                            <label for="form-plazo">Plazo Estimado (Horas)</label>
+                            <input type="number" id="form-plazo" min="1" max="500" value="4" required>
+                        </div>
+                    </div>
+
                     <div class="form-field">
-                        <label for="form-descripcion">Descripción de la avería o trabajo</label>
-                        <textarea id="form-descripcion" required placeholder="Detalle técnico de la intervención eléctrica..."></textarea>
+                        <label for="form-descripcion">Descripción de la Avería / Trabajo</label>
+                        <textarea id="form-descripcion" required placeholder="Detalle técnico de la intervención..."></textarea>
                     </div>
                     <label class="check-item check-item-form">
                         <input type="checkbox" id="chk-detalles-arreglos">
                         <span class="check-box"></span>
-                        <span>Detalles de los arreglos relevados en campo</span>
+                        <span>Detalles de arreglos relevados en campo</span>
                     </label>
                 </div>
 
-                <!-- BLOQUE: PRIORIDAD SEMÁFORO + MONTO -->
+                <!-- BLOQUE 3: PRESUPUESTO BASE EN SEMÁFORO Y MONTOS -->
                 <div class="form-block">
                     <div class="form-block-label">
-                        <span class="block-num">03</span> Prioridad y Presupuesto
+                        <span class="block-num">03</span> Presupuesto Semáforo y Costos
                     </div>
                     <div class="form-row-2">
                         <div class="form-field">
-                            <label for="form-seguridad">Prioridad / Nivel de Riesgo</label>
+                            <label for="form-semaforo">Semáforo de Presupuesto</label>
                             <div class="select-semaforo-wrap">
-                                <select id="form-seguridad" required>
-                                    <option value="SEGURO">🟢 SEGURO — Instalación normalizada</option>
-                                    <option value="RIESGO_BAJO">🟡 RIESGO BAJO — Falta mantenimiento</option>
-                                    <option value="RIESGO_ALTO">🔴 RIESGO ALTO — Sin tierra / Térmicas obsoletas</option>
+                                <select id="form-semaforo" required>
+                                    <option value="VERDE">🟢 Estándar / Accesible</option>
+                                    <option value="AMARILLO">🟡 Medio / Regular</option>
+                                    <option value="ROJO">🔴 Alto Costo / Urgencia</option>
                                 </select>
                             </div>
                         </div>
                         <div class="form-field">
-                            <label for="form-monto">Monto Estimado ($)</label>
-                            <input type="number" id="form-monto" step="0.01" min="0" required placeholder="0.00">
+                            <label for="form-materiales">Monto Materiales ($)</label>
+                            <input type="number" id="form-materiales" step="0.01" min="0" value="0.00" required>
+                        </div>
+                    </div>
+                    <div class="form-row-2">
+                        <div class="form-field">
+                            <label for="form-mano-obra">Mano de Obra ($)</label>
+                            <input type="number" id="form-mano-obra" step="0.01" min="0" required placeholder="0.00">
+                        </div>
+                        <div class="form-field">
+                            <label for="form-monto-total">Total Calculado ($)</label>
+                            <input type="number" id="form-monto-total" step="0.01" readonly placeholder="0.00">
                         </div>
                     </div>
                 </div>
@@ -202,14 +279,41 @@
         </div>
     </div>
 
-    <!-- MODAL HISTORIAL -->
+    <!-- ============================
+         MODAL HISTORIAL CON EXPORTACIÓN PDF
+         ============================ -->
     <div id="modal-historial" class="modal-overlay hidden">
-        <div class="modal-form">
+        <div class="modal-form modal-form-lg">
             <div class="modal-form-header">
-                <h3>Historial Completo</h3>
-                <button id="btn-cerrar-historial" class="btn-close">✕</button>
+                <div>
+                    <h3>Historial General de Trabajos</h3>
+                    <span class="security-sub" style="margin-bottom:0;">Registro de todas las intervenciones activas y archivadas</span>
+                </div>
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <button id="btn-descargar-historial-pdf" class="btn btn-primary-action" style="padding: 8px 16px; font-size:0.8rem;">
+                        📥 Descargar PDF
+                    </button>
+                    <button id="btn-cerrar-historial" class="btn-close">✕</button>
+                </div>
             </div>
-            <div id="historial-contenido" class="historial-list"></div>
+
+            <div class="table-responsive" style="padding: 0 24px 24px;">
+                <table class="app-table" id="tabla-historial">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Cliente</th>
+                            <th>Oficio</th>
+                            <th>Semáforo</th>
+                            <th>Total</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="body-historial">
+                        <!-- Inyección dinámica -->
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
