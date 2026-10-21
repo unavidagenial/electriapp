@@ -24,7 +24,7 @@ CREATE TABLE clientes (
 
 -- 4. TABLA: OFICIOS
 CREATE TABLE oficios (
-    id_oficio VARCHAR(60) NOT NULL,PRIMARY KEY
+    id_oficio VARCHAR(60) NOT NULL PRIMARY KEY,
     activo BOOLEAN NOT NULL DEFAULT TRUE
 ) ENGINE=InnoDB;
 
@@ -35,13 +35,14 @@ CREATE TABLE usuarios_tecnicos (
     email VARCHAR(100) NOT NULL UNIQUE,
     telefono INT (15) NULL,
     disponibilidad BOOLEAN NOT NULL DEFAULT TRUE,
-    id_oficio VARCHAR (60) NOT NULL,                       
+    id_oficio VARCHAR (60),                       
     activo BOOLEAN NOT NULL DEFAULT TRUE,
     CONSTRAINT fk_tecnico_oficio FOREIGN KEY (id_oficio) 
-        REFERENCES oficios (id_oficio) ON DELETE SET NULL ON UPDATE CASCADE
+	REFERENCES oficios (id_oficio) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
--- 6. CREATE TABLE historial_estados (
+-- 6. 
+CREATE TABLE historial_estados (
     id_historial INT AUTO_INCREMENT PRIMARY KEY,
     id_trabajo INT NULL,
     estado VARCHAR(30) NOT NULL, 
@@ -73,9 +74,6 @@ ALTER TABLE historial_estados
 ADD CONSTRAINT fk_historial_trabajo FOREIGN KEY (id_trabajo) 
 REFERENCES trabajos (id_trabajo) ON DELETE CASCADE ON UPDATE CASCADE;
 
-        REFERENCES trabajos (id_trabajo) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB;
-
 -- 8. TABLA: COMPROBANTES
 CREATE TABLE comprobantes (
     id_comprobante INT AUTO_INCREMENT PRIMARY KEY,
@@ -88,9 +86,16 @@ CREATE TABLE comprobantes (
 ) ENGINE=InnoDB;
 
 -- 9. INSERCIÓN DE DATOS INICIALES (Semillas de Oficios)
-INSERT INTO oficios (codigo, nombre, activo) VALUES
+INSERT INTO oficios (codigo, id_oficio, activo) VALUES
 ('ELECTRICIDAD', 'Electricidad e Instalaciones', TRUE),
 ('PLOMERIA', 'Plomería y Redes de Agua', TRUE),
 ('GAS_CLIMA', 'Gas y Climatización', TRUE),
 ('ALBANILERIA', 'construccion', TRUE)
-ON DUPLICATE KEY UPDATE nombre=VALUES(nombre);
+ON DUPLICATE KEY UPDATE id_oficio=VALUES(id_oficio);
+
+-- Cambio a tabla oficios que le faltaba una columna
+alter table oficios
+add codigo varchar(60) not null;
+
+-- mostrar tabla oficios para verificar
+select * from oficios;
