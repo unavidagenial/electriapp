@@ -1,31 +1,29 @@
 /* =====================================================
-   SIGES-ELEC — CSS MODERNO / INDUSTRIAL REFINADO
-   Paleta oscura + acentos eléctricos + bordes suaves
+   SIGES-ELEC / ElectriApp v2 — CSS Industrial Refinado
+   Sin duplicados · Panel Super Admin · Soporte @media print
    ===================================================== */
 
 :root {
-    /* Colores base */
     --bg-deep:    #0a0e17;
     --bg-surface: #111827;
     --bg-card:    #1a2235;
     --bg-input:   #1e2a3d;
     --bg-modal:   #0f1623;
 
-    /* Bordes */
     --border:     rgba(255,255,255,0.08);
     --border-act: rgba(245,158,11,0.5);
 
-    /* Texto */
     --text-hi:    #f0f4ff;
     --text-mid:   #8899bb;
-    --text-lo:    #4a5a7a;
+    --text-lo:    #566789;
 
-    /* Acento principal: amarillo eléctrico */
     --yellow:     #f59e0b;
     --yellow-dim: rgba(245,158,11,0.12);
     --yellow-glow:rgba(245,158,11,0.3);
 
-    /* Semáforo */
+    --blue:       #38bdf8;
+    --blue-dim:   rgba(56,189,248,0.12);
+
     --red:        #f43f5e;
     --red-dim:    rgba(244,63,94,0.12);
     --amber:      #fb923c;
@@ -33,22 +31,18 @@
     --green:      #10b981;
     --green-dim:  rgba(16,185,129,0.12);
 
-    /* Tipografía */
     --font-display: 'Syne', sans-serif;
     --font-body:    'DM Sans', sans-serif;
 
-    /* Radios */
     --r-sm:  8px;
     --r-md:  14px;
     --r-lg:  20px;
     --r-xl:  28px;
 
-    /* Sombras */
     --shadow-card: 0 4px 24px rgba(0,0,0,0.35);
     --shadow-modal:0 20px 60px rgba(0,0,0,0.6);
 }
 
-/* ===== RESET ===== */
 *, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
@@ -65,7 +59,6 @@ body {
     line-height: 1.6;
     min-height: 100vh;
     overflow-x: hidden;
-    /* Fondo con textura sutil de cuadrícula */
     background-image:
         radial-gradient(ellipse 80% 50% at 50% -20%, rgba(245,158,11,0.07), transparent),
         linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
@@ -73,15 +66,13 @@ body {
     background-size: 100% 100%, 32px 32px, 32px 32px;
 }
 
-/* ===== UTILIDADES ===== */
 .hidden { display: none !important; }
 
-/* ===== BLUR DE SEGURIDAD ===== */
 .app-blur {
     filter: blur(10px) brightness(0.4);
     pointer-events: none;
     user-select: none;
-    transition: filter 0.5s ease;
+    transition: filter 0.4s ease;
 }
 
 /* ================================================
@@ -97,7 +88,7 @@ body {
     justify-content: center;
     z-index: 9999;
     padding: 16px;
-    animation: fadeIn 0.3s ease;
+    animation: fadeIn 0.25s ease;
 }
 
 @keyframes fadeIn {
@@ -113,15 +104,14 @@ body {
     width: 100%;
     overflow: hidden;
     box-shadow: var(--shadow-modal);
-    animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @keyframes slideUp {
-    from { opacity: 0; transform: translateY(24px) scale(0.97); }
+    from { opacity: 0; transform: translateY(20px) scale(0.97); }
     to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-/* Franja de advertencia estilo vial */
 .security-stripe {
     height: 8px;
     background: repeating-linear-gradient(
@@ -134,7 +124,7 @@ body {
 }
 
 .security-body {
-    padding: 32px;
+    padding: 28px 32px 32px;
     text-align: center;
 }
 
@@ -142,12 +132,12 @@ body {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 64px;
-    height: 64px;
+    width: 60px;
+    height: 60px;
     background: var(--yellow-dim);
     border: 2px solid var(--yellow-glow);
     border-radius: 50%;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     animation: pulse 2.5s ease-in-out infinite;
 }
 
@@ -156,37 +146,37 @@ body {
     50%       { box-shadow: 0 0 0 10px transparent; }
 }
 
-.safety-bolt {
-    font-size: 28px;
-    line-height: 1;
-}
+.safety-bolt { font-size: 26px; line-height: 1; }
 
 .modal-security h2 {
     font-family: var(--font-display);
-    font-size: 1.4rem;
+    font-size: 1.35rem;
     font-weight: 800;
     letter-spacing: 0.05em;
-    color: var(--text-hi);
-    margin-bottom: 6px;
+    margin-bottom: 4px;
 }
 
 .security-sub {
     font-size: 0.82rem;
     color: var(--text-mid);
-    margin-bottom: 28px;
+    margin-bottom: 18px;
 }
 
-/* Checklist personalizado */
+.security-operator-field {
+    text-align: left;
+    margin-bottom: 14px;
+}
+
 .checklist-wrap {
     background: var(--bg-input);
     border: 1px solid var(--border);
     border-radius: var(--r-md);
-    padding: 18px;
+    padding: 16px;
     text-align: left;
-    margin-bottom: 22px;
+    margin-bottom: 18px;
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 12px;
 }
 
 .check-item {
@@ -194,16 +184,13 @@ body {
     align-items: flex-start;
     gap: 12px;
     cursor: pointer;
-    font-size: 0.88rem;
+    font-size: 0.87rem;
     color: var(--text-mid);
     transition: color 0.2s;
 }
 
 .check-item:hover { color: var(--text-hi); }
-
-.check-item input[type="checkbox"] {
-    display: none;
-}
+.check-item input[type="checkbox"] { display: none; }
 
 .check-box {
     flex-shrink: 0;
@@ -216,7 +203,7 @@ body {
     align-items: center;
     justify-content: center;
     transition: all 0.2s;
-    margin-top: 1px;
+    margin-top: 2px;
 }
 
 .check-box::after {
@@ -238,18 +225,18 @@ body {
     transform: scale(1);
 }
 
-.check-item input:checked ~ span:last-child {
-    color: var(--text-hi);
-}
+.check-item input:checked ~ span:last-child { color: var(--text-hi); }
 
 .warning-note {
-    font-size: 0.78rem;
+    font-size: 0.77rem;
     color: var(--text-lo);
-    margin-bottom: 24px;
+    margin-bottom: 20px;
     line-height: 1.5;
 }
 
-/* ===== BOTONES GENERALES ===== */
+/* ================================================
+   BOTONES
+   ================================================ */
 .btn {
     display: inline-flex;
     align-items: center;
@@ -257,12 +244,12 @@ body {
     gap: 8px;
     font-family: var(--font-display);
     font-weight: 600;
-    font-size: 0.88rem;
+    font-size: 0.86rem;
     border: none;
     border-radius: var(--r-md);
     cursor: pointer;
     transition: all 0.2s ease;
-    padding: 11px 20px;
+    padding: 10px 18px;
     white-space: nowrap;
     letter-spacing: 0.02em;
 }
@@ -274,14 +261,13 @@ body {
     padding: 14px;
     background: var(--yellow);
     color: #0a0e17;
-    font-size: 0.95rem;
-    border-radius: var(--r-md);
+    font-size: 0.94rem;
     font-weight: 800;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.05em;
 }
 
 .btn-unlock:disabled {
-    background: #2a2a2a;
+    background: #262c3a;
     color: var(--text-lo);
     cursor: not-allowed;
 }
@@ -291,7 +277,40 @@ body {
     box-shadow: 0 0 24px var(--yellow-glow);
 }
 
-.lock-icon { font-size: 16px; }
+.btn-admin-trigger {
+    background: var(--bg-card);
+    color: var(--text-hi);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 7px 14px;
+    font-size: 0.8rem;
+}
+
+.btn-admin-trigger.is-admin {
+    background: var(--yellow-dim);
+    border-color: var(--yellow);
+    color: var(--yellow);
+}
+
+.btn-admin-trigger:hover {
+    border-color: var(--yellow);
+    color: var(--yellow);
+}
+
+.btn-lock-trigger {
+    background: var(--bg-card);
+    color: var(--text-mid);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+}
+
+.btn-lock-trigger:hover {
+    border-color: var(--red);
+    color: var(--red);
+}
 
 /* ================================================
    LAYOUT PRINCIPAL
@@ -300,21 +319,21 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    transition: filter 0.5s ease;
+    transition: filter 0.4s ease;
 }
 
-/* HEADER */
 .app-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 18px 24px;
+    padding: 16px 24px;
     border-bottom: 1px solid var(--border);
-    background: rgba(10, 14, 23, 0.8);
+    background: rgba(10, 14, 23, 0.85);
     backdrop-filter: blur(10px);
     position: sticky;
     top: 0;
     z-index: 100;
+    gap: 12px;
 }
 
 .header-brand {
@@ -330,29 +349,41 @@ body {
 
 .brand-name {
     font-family: var(--font-display);
-    font-size: 1.3rem;
+    font-size: 1.25rem;
     font-weight: 800;
-    color: var(--text-hi);
     letter-spacing: 0.05em;
     line-height: 1.1;
 }
 
+.brand-version {
+    font-size: 0.7rem;
+    color: var(--yellow);
+    background: var(--yellow-dim);
+    padding: 2px 6px;
+    border-radius: 6px;
+    vertical-align: middle;
+}
+
 .brand-tag {
     display: block;
-    font-size: 0.68rem;
-    color: var(--green);
-    letter-spacing: 0.04em;
-    font-weight: 400;
+    font-size: 0.7rem;
+    color: var(--text-mid);
+}
+
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .header-status {
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     color: var(--text-mid);
     background: var(--bg-card);
-    padding: 6px 14px;
+    padding: 6px 12px;
     border-radius: 100px;
     border: 1px solid var(--border);
 }
@@ -363,27 +394,62 @@ body {
     background: var(--green);
     border-radius: 50%;
     box-shadow: 0 0 6px var(--green);
-    animation: blink 3s ease-in-out infinite;
 }
 
-@keyframes blink {
-    0%, 100% { opacity: 1; }
-    50%       { opacity: 0.4; }
+.header-status.status-demo .status-dot {
+    background: var(--amber);
+    box-shadow: 0 0 6px var(--amber);
 }
 
-/* MAIN */
 .main-panel {
-    max-width: 880px;
+    max-width: 960px;
     margin: 0 auto;
-    padding: 28px 20px 60px;
+    padding: 24px 20px 64px;
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 20px;
 }
 
 /* ================================================
-   SECCIÓN BÚSQUEDA + HISTORIAL (del boceto)
+   KPI GRID
+   ================================================ */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
+
+.kpi-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.kpi-label {
+    font-size: 0.74rem;
+    color: var(--text-mid);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.kpi-value {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--text-hi);
+}
+
+.kpi-danger .kpi-value { color: var(--red); }
+.kpi-warn .kpi-value   { color: var(--amber); }
+.kpi-success .kpi-value{ color: var(--green); }
+
+/* ================================================
+   BÚSQUEDA, FILTROS Y ACCIONES
    ================================================ */
 .search-section {
     display: flex;
@@ -401,21 +467,21 @@ body {
 .search-icon-inner {
     position: absolute;
     left: 16px;
-    font-size: 16px;
+    font-size: 15px;
     pointer-events: none;
     color: var(--text-mid);
 }
 
 #input-busqueda {
     width: 100%;
-    padding: 13px 44px 13px 44px;
+    padding: 12px 42px;
     background: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: var(--r-lg);
     color: var(--text-hi);
     font-family: var(--font-body);
-    font-size: 0.95rem;
-    transition: all 0.25s;
+    font-size: 0.94rem;
+    transition: all 0.2s;
 }
 
 #input-busqueda::placeholder { color: var(--text-lo); }
@@ -436,20 +502,14 @@ body {
     cursor: pointer;
     font-size: 14px;
     padding: 4px;
-    border-radius: 50%;
-    transition: color 0.2s;
 }
-
-.btn-clear:hover { color: var(--text-hi); }
 
 .btn-outline {
     background: var(--bg-card);
     color: var(--text-hi);
     border: 1px solid var(--border);
     border-radius: var(--r-lg);
-    padding: 13px 20px;
-    font-family: var(--font-display);
-    font-size: 0.85rem;
+    padding: 12px 18px;
 }
 
 .btn-outline:hover {
@@ -457,9 +517,28 @@ body {
     color: var(--yellow);
 }
 
-/* ================================================
-   ACCIONES (del boceto: Agregar Cliente + PDF)
-   ================================================ */
+.filters-section {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.filter-select {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    color: var(--text-hi);
+    font-family: var(--font-body);
+    font-size: 0.86rem;
+    padding: 10px 12px;
+    cursor: pointer;
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: var(--yellow);
+}
+
 .actions-section {
     display: flex;
     gap: 12px;
@@ -468,15 +547,11 @@ body {
 
 .btn-primary-action {
     flex: 1;
-    min-width: 160px;
+    min-width: 180px;
     background: var(--yellow);
     color: #0a0e17;
-    font-family: var(--font-display);
     font-weight: 800;
-    font-size: 0.9rem;
-    border-radius: var(--r-md);
-    padding: 14px 22px;
-    letter-spacing: 0.02em;
+    padding: 13px 20px;
 }
 
 .btn-primary-action:hover {
@@ -489,30 +564,22 @@ body {
     background: var(--bg-card);
     color: var(--text-hi);
     border: 1px solid var(--border);
-    font-family: var(--font-display);
-    font-size: 0.9rem;
-    border-radius: var(--r-md);
-    padding: 14px 22px;
+    padding: 13px 20px;
 }
 
 .btn-secondary-action:hover {
-    border-color: var(--text-mid);
-    background: var(--bg-input);
+    border-color: var(--yellow);
+    color: var(--yellow);
     transform: translateY(-1px);
 }
 
-.btn-icon {
-    font-size: 16px;
-    line-height: 1;
-}
-
 /* ================================================
-   LISTA DE TRABAJOS CON SEMÁFORO (del boceto)
+   LISTA DE TRABAJOS
    ================================================ */
 .jobs-section {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 14px;
 }
 
 .section-header {
@@ -525,14 +592,13 @@ body {
 
 .section-header h2 {
     font-family: var(--font-display);
-    font-size: 1rem;
+    font-size: 0.96rem;
     font-weight: 700;
     color: var(--text-mid);
     letter-spacing: 0.04em;
     text-transform: uppercase;
 }
 
-/* Leyenda semáforo */
 .legend-semaforo {
     display: flex;
     align-items: center;
@@ -548,29 +614,26 @@ body {
     margin-left: 8px;
 }
 
-.dot-red   { background: var(--red);   box-shadow: 0 0 5px var(--red); }
-.dot-amber { background: var(--amber); box-shadow: 0 0 5px var(--amber); }
-.dot-green { background: var(--green); box-shadow: 0 0 5px var(--green); }
+.dot-red   { background: var(--red); }
+.dot-amber { background: var(--amber); }
+.dot-green { background: var(--green); }
 
-/* Lista de trabajos */
 .jobs-list {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
 }
 
-/* Estado vacío */
 .empty-state {
     text-align: center;
     color: var(--text-lo);
-    padding: 48px 20px;
+    padding: 42px 20px;
     border: 2px dashed var(--border);
     border-radius: var(--r-lg);
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 14px;
-    font-size: 0.9rem;
+    gap: 12px;
 }
 
 .btn-ghost {
@@ -580,9 +643,8 @@ body {
     font-family: var(--font-body);
     font-size: 0.85rem;
     border-radius: var(--r-md);
-    padding: 9px 18px;
+    padding: 9px 16px;
     cursor: pointer;
-    transition: all 0.2s;
 }
 
 .btn-ghost:hover {
@@ -590,7 +652,6 @@ body {
     color: var(--yellow);
 }
 
-/* TARJETA DE TRABAJO */
 .job-card {
     background: var(--bg-card);
     border: 1px solid var(--border);
@@ -598,15 +659,8 @@ body {
     padding: 18px 20px;
     display: flex;
     align-items: flex-start;
-    gap: 16px;
+    gap: 14px;
     transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
-    animation: cardIn 0.3s ease both;
-    cursor: default;
-}
-
-@keyframes cardIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to   { opacity: 1; transform: translateY(0); }
 }
 
 .job-card:hover {
@@ -615,20 +669,18 @@ body {
     border-color: rgba(255,255,255,0.14);
 }
 
-/* Franja semáforo lateral */
 .semaforo-bar {
     flex-shrink: 0;
     width: 4px;
     border-radius: 4px;
     align-self: stretch;
-    min-height: 50px;
+    min-height: 54px;
 }
 
-.bar-SEGURO     { background: var(--green); box-shadow: 0 0 8px var(--green); }
-.bar-RIESGO_BAJO{ background: var(--amber); box-shadow: 0 0 8px var(--amber); }
-.bar-RIESGO_ALTO{ background: var(--red);   box-shadow: 0 0 8px var(--red); }
+.bar-SEGURO      { background: var(--green); }
+.bar-RIESGO_BAJO { background: var(--amber); }
+.bar-RIESGO_ALTO { background: var(--red); }
 
-/* Número de prioridad (del boceto: ①②③④) */
 .job-num {
     flex-shrink: 0;
     width: 30px;
@@ -638,26 +690,21 @@ body {
     align-items: center;
     justify-content: center;
     font-family: var(--font-display);
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     font-weight: 800;
-    margin-top: 2px;
 }
 
 .num-SEGURO      { background: var(--green-dim); color: var(--green); border: 1px solid var(--green); }
 .num-RIESGO_BAJO { background: var(--amber-dim); color: var(--amber); border: 1px solid var(--amber); }
 .num-RIESGO_ALTO { background: var(--red-dim);   color: var(--red);   border: 1px solid var(--red); }
 
-/* Contenido de la tarjeta */
-.job-body {
-    flex: 1;
-    min-width: 0;
-}
+.job-body { flex: 1; min-width: 0; }
 
 .job-top {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
-    gap: 10px;
+    gap: 8px;
     margin-bottom: 8px;
     flex-wrap: wrap;
 }
@@ -666,14 +713,18 @@ body {
     font-family: var(--font-display);
     font-size: 1rem;
     font-weight: 700;
-    color: var(--text-hi);
-    line-height: 1.2;
 }
 
-.badge-riesgo {
+.badges-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.badge-riesgo, .badge-tag {
     font-size: 0.68rem;
     font-weight: 700;
-    padding: 3px 10px;
+    padding: 3px 9px;
     border-radius: 100px;
     letter-spacing: 0.04em;
     white-space: nowrap;
@@ -682,20 +733,21 @@ body {
 .badge-SEGURO      { background: var(--green-dim); color: var(--green); }
 .badge-RIESGO_BAJO { background: var(--amber-dim); color: var(--amber); }
 .badge-RIESGO_ALTO { background: var(--red-dim);   color: var(--red); }
+.badge-oficio      { background: var(--blue-dim);  color: var(--blue); }
+.badge-estado      { background: rgba(255,255,255,0.07); color: var(--text-hi); }
 
 .job-meta {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px 18px;
+    gap: 6px 16px;
     font-size: 0.82rem;
     color: var(--text-mid);
     margin-bottom: 8px;
 }
 
 .job-desc {
-    font-size: 0.85rem;
+    font-size: 0.86rem;
     color: var(--text-mid);
-    line-height: 1.5;
     border-top: 1px solid var(--border);
     padding-top: 8px;
     margin-top: 6px;
@@ -707,70 +759,99 @@ body {
     justify-content: space-between;
     margin-top: 12px;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 10px;
 }
 
 .job-monto {
     font-family: var(--font-display);
-    font-size: 1.1rem;
+    font-size: 1.08rem;
     font-weight: 700;
-    color: var(--text-hi);
+}
+
+.job-comprobante {
+    font-size: 0.76rem;
+    color: var(--text-lo);
+    margin-left: 8px;
+    font-family: monospace;
 }
 
 .job-actions {
     display: flex;
     gap: 8px;
+    flex-wrap: wrap;
 }
 
-.btn-edit {
+.btn-edit, .btn-pdf-mini, .btn-delete-mini {
     background: var(--bg-input);
     border: 1px solid var(--border);
     color: var(--text-mid);
-    font-size: 0.8rem;
-    padding: 6px 14px;
+    font-size: 0.78rem;
+    padding: 6px 12px;
     border-radius: var(--r-sm);
     cursor: pointer;
     font-family: var(--font-body);
     transition: all 0.2s;
 }
 
-.btn-edit:hover {
-    border-color: var(--yellow);
-    color: var(--yellow);
-}
+.btn-edit:hover      { border-color: var(--yellow); color: var(--yellow); }
+.btn-pdf-mini:hover  { border-color: var(--blue);   color: var(--blue); }
+.btn-delete-mini:hover { border-color: var(--red);  color: var(--red); background: var(--red-dim); }
 
 /* ================================================
-   MODAL FORMULARIO
+   MODALES Y FORMULARIOS
    ================================================ */
 .modal-form {
     background: var(--bg-modal);
     border: 1px solid var(--border);
     border-radius: var(--r-xl);
-    max-width: 580px;
+    max-width: 600px;
     width: 100%;
     max-height: 92vh;
     overflow-y: auto;
     box-shadow: var(--shadow-modal);
-    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.modal-form::-webkit-scrollbar { width: 4px; }
-.modal-form::-webkit-scrollbar-track { background: transparent; }
-.modal-form::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+.modal-compact { max-width: 440px; }
+.modal-wide    { max-width: 780px; }
 
 .modal-form-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 24px 28px 0;
-    margin-bottom: 24px;
+    padding: 22px 26px 0;
+    margin-bottom: 18px;
 }
 
 .modal-form-header h3 {
     font-family: var(--font-display);
-    font-size: 1.15rem;
+    font-size: 1.12rem;
     font-weight: 800;
-    color: var(--text-hi);
+}
+
+.admin-subtitle {
+    display: block;
+    font-size: 0.78rem;
+    color: var(--green);
+}
+
+.admin-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-danger-outline {
+    background: transparent;
+    border: 1px solid var(--red);
+    color: var(--red);
+    padding: 6px 12px;
+    font-size: 0.78rem;
+    border-radius: var(--r-sm);
+}
+
+.btn-danger-outline:hover {
+    background: var(--red-dim);
 }
 
 .btn-close {
@@ -781,11 +862,6 @@ body {
     height: 32px;
     border-radius: 50%;
     cursor: pointer;
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
 }
 
 .btn-close:hover {
@@ -794,11 +870,9 @@ body {
     color: var(--red);
 }
 
-/* Bloques del formulario */
 .form-block {
-    padding: 0 28px 20px;
+    padding: 0 26px 18px;
     border-bottom: 1px solid var(--border);
-    margin-bottom: 0;
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -810,12 +884,12 @@ body {
     display: flex;
     align-items: center;
     gap: 10px;
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     font-weight: 600;
     color: var(--text-mid);
     text-transform: uppercase;
-    letter-spacing: 0.06em;
-    padding-top: 4px;
+    letter-spacing: 0.05em;
+    padding-top: 8px;
 }
 
 .block-num {
@@ -823,7 +897,7 @@ body {
     color: var(--yellow);
     border: 1px solid var(--yellow-glow);
     font-family: var(--font-display);
-    font-size: 0.72rem;
+    font-size: 0.7rem;
     font-weight: 800;
     padding: 2px 7px;
     border-radius: 5px;
@@ -835,20 +909,15 @@ body {
     gap: 12px;
 }
 
-@media (max-width: 520px) {
-    .form-row-2 { grid-template-columns: 1fr; }
-}
-
 .form-field {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 5px;
 }
 
 .form-field label {
     font-size: 0.78rem;
     color: var(--text-mid);
-    font-weight: 500;
 }
 
 .form-field input,
@@ -860,10 +929,8 @@ body {
     color: var(--text-hi);
     font-family: var(--font-body);
     font-size: 0.92rem;
-    padding: 10px 14px;
-    transition: all 0.2s;
+    padding: 10px 13px;
     width: 100%;
-    appearance: none;
 }
 
 .form-field input:focus,
@@ -872,66 +939,32 @@ body {
     outline: none;
     border-color: var(--yellow);
     box-shadow: 0 0 0 3px var(--yellow-dim);
-    background: var(--bg-card);
 }
 
 .form-field textarea {
-    height: 90px;
-    resize: none;
-    line-height: 1.5;
+    height: 84px;
+    resize: vertical;
 }
 
-.select-semaforo-wrap {
-    position: relative;
-}
-
-.select-semaforo-wrap::after {
-    content: '▾';
-    position: absolute;
-    right: 14px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--text-mid);
-    pointer-events: none;
-    font-size: 12px;
-}
-
-.select-semaforo-wrap select {
-    cursor: pointer;
-    padding-right: 36px;
-}
-
-/* Checkbox del formulario */
 .check-item-form {
     background: var(--bg-input);
     border: 1px solid var(--border);
-    padding: 12px 14px;
+    padding: 11px 14px;
     border-radius: var(--r-sm);
-    transition: border-color 0.2s;
 }
 
-.check-item-form:has(input:checked) {
-    border-color: var(--yellow-glow);
-    background: var(--yellow-dim);
-}
-
-/* Acciones del formulario */
 .form-actions {
     display: flex;
     justify-content: flex-end;
     gap: 10px;
-    padding: 20px 28px 28px;
+    padding: 18px 26px 24px;
 }
 
 .btn-save {
     background: var(--yellow);
     color: #0a0e17;
-    font-family: var(--font-display);
     font-weight: 800;
-    font-size: 0.9rem;
-    padding: 12px 26px;
-    border-radius: var(--r-md);
-    letter-spacing: 0.03em;
+    padding: 11px 22px;
 }
 
 .btn-save:hover {
@@ -939,58 +972,161 @@ body {
     box-shadow: 0 4px 16px var(--yellow-glow);
 }
 
-/* ================================================
-   MODAL HISTORIAL
-   ================================================ */
-.historial-list {
-    padding: 0 28px 28px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+.admin-hint {
+    font-size: 0.85rem;
+    color: var(--text-mid);
 }
 
-.historial-item {
+.demo-cred-note {
+    font-size: 0.78rem;
+    color: var(--text-lo);
+}
+
+.demo-cred-note code {
+    background: var(--bg-card);
+    color: var(--yellow);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.error-msg {
+    color: var(--red);
+    background: var(--red-dim);
+    border: 1px solid var(--red);
+    padding: 8px 12px;
+    border-radius: var(--r-sm);
+    font-size: 0.82rem;
+}
+
+/* ================================================
+   PANEL SUPER ADMIN (TABS Y LISTAS)
+   ================================================ */
+.admin-tabs {
+    display: flex;
+    gap: 8px;
+    padding: 0 26px 14px;
+    border-bottom: 1px solid var(--border);
+}
+
+.admin-tab {
     background: var(--bg-input);
     border: 1px solid var(--border);
-    border-radius: var(--r-md);
-    padding: 14px 16px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    font-size: 0.88rem;
-}
-
-.historial-item .h-id {
-    font-family: var(--font-display);
-    font-size: 0.75rem;
-    font-weight: 800;
-    color: var(--text-lo);
-    min-width: 28px;
-}
-
-.historial-item .h-nombre {
-    flex: 1;
-    font-weight: 500;
-    color: var(--text-hi);
-}
-
-.historial-item .h-monto {
-    font-family: var(--font-display);
     color: var(--text-mid);
+    padding: 8px 14px;
+    border-radius: var(--r-sm);
+    cursor: pointer;
+    font-family: var(--font-display);
+    font-size: 0.82rem;
+    font-weight: 600;
+}
+
+.admin-tab.active {
+    background: var(--yellow-dim);
+    border-color: var(--yellow);
+    color: var(--yellow);
+}
+
+.admin-tab-panel {
+    display: none;
+    padding: 18px 26px 26px;
+}
+
+.admin-tab-panel.active {
+    display: block;
+}
+
+.inline-admin-form {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr auto;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.inline-admin-form-4 {
+    grid-template-columns: 1fr 1fr 1fr 1fr auto;
+}
+
+.inline-admin-form input,
+.inline-admin-form select {
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    color: var(--text-hi);
+    padding: 9px 11px;
     font-size: 0.85rem;
 }
 
+.admin-list, .historial-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.historial-list { padding: 0 26px 26px; }
+
+.admin-row, .historial-item {
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 0.85rem;
+    flex-wrap: wrap;
+}
+
+.audit-section-title {
+    font-family: var(--font-display);
+    font-size: 0.84rem;
+    color: var(--yellow);
+    margin: 10px 0 8px;
+    text-transform: uppercase;
+}
+
+.toast-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.toast {
+    background: var(--bg-card);
+    border: 1px solid var(--yellow);
+    color: var(--text-hi);
+    padding: 12px 16px;
+    border-radius: var(--r-md);
+    box-shadow: var(--shadow-card);
+    font-size: 0.85rem;
+    animation: slideUp 0.25s ease;
+}
+
 /* ================================================
-   RESPONSIVO MOBILE
+   RESPONSIVO Y SOPORTE DE IMPRESIÓN PDF
    ================================================ */
-@media (max-width: 600px) {
-    .main-panel { padding: 20px 14px 48px; gap: 18px; }
-    .app-header { padding: 14px 16px; }
-    .brand-name { font-size: 1.1rem; }
+@media (max-width: 720px) {
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .filters-section { grid-template-columns: 1fr; }
+    .form-row-2, .inline-admin-form, .inline-admin-form-4 { grid-template-columns: 1fr; }
     .header-status span:last-child { display: none; }
-    .section-header { flex-direction: column; align-items: flex-start; }
-    .job-card { padding: 14px; }
-    .modal-form-header { padding: 20px 20px 0; }
-    .form-block { padding: 0 20px 18px; }
-    .form-actions { padding: 16px 20px 24px; }
+}
+
+@media print {
+    body { background: #fff; color: #000; }
+    .modal-overlay, .search-section, .filters-section, .actions-section, .header-controls, .job-actions {
+        display: none !important;
+    }
+    .app-blur { filter: none !important; }
+    .job-card, .kpi-card {
+        background: #fff !important;
+        color: #000 !important;
+        border: 1px solid #ccc !important;
+        break-inside: avoid;
+    }
+    .job-meta, .job-desc { color: #333 !important; }
 }
