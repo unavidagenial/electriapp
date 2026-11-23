@@ -3,11 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIGES-ELEC | Gestión y Seguridad Eléctrica</title>
+    <title>ElectriApp · SIGES-ELEC | Gestión Técnica y Seguridad</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <!-- Librerías para generación real de PDF (con fallback automático a impresión PDF si está offline) -->
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js" defer></script>
 </head>
 <body>
 
@@ -22,7 +25,12 @@
                     <span class="safety-bolt">⚡</span>
                 </div>
                 <h2>PROTOCOLO DE SEGURIDAD</h2>
-                <p class="security-sub">Normativa obligatoria antes de operar</p>
+                <p class="security-sub">Normativa obligatoria antes de operar · Registro auditable</p>
+
+                <div class="form-field security-operator-field">
+                    <label for="input-operador">Operador / Técnico en turno</label>
+                    <input type="text" id="input-operador" value="Pedro Electricista" placeholder="Nombre del técnico responsable">
+                </div>
 
                 <div class="checklist-wrap">
                     <label class="check-item">
@@ -42,7 +50,7 @@
                     </label>
                 </div>
 
-                <p class="warning-note">Al confirmar, declara bajo juramento profesional que ha mitigado los riesgos activos.</p>
+                <p class="warning-note">Al confirmar, declara bajo juramento profesional que mitigó los riesgos activos. La sesión se autobloquea tras 15 min de inactividad.</p>
 
                 <button id="btn-aceptar-seguridad" class="btn btn-unlock" disabled>
                     <span class="lock-icon">🔒</span>
@@ -62,79 +70,122 @@
             <div class="header-brand">
                 <span class="brand-bolt">⚡</span>
                 <div>
-                    <h1 class="brand-name">SIGES-ELEC</h1>
-                    <span class="brand-tag">Matrícula Profesional Verificada</span>
+                    <h1 class="brand-name">SIGES-ELEC <span class="brand-version">v2</span></h1>
+                    <span class="brand-tag">ElectriApp · Multioficio &amp; Trazabilidad</span>
                 </div>
             </div>
-            <div class="header-status">
-                <span class="status-dot"></span>
-                <span>Operando Seguro</span>
+
+            <div class="header-controls">
+                <div id="db-mode-badge" class="header-status status-demo" title="Estado de conexión con la base de datos SQL">
+                    <span class="status-dot"></span>
+                    <span id="db-mode-text">Verificando...</span>
+                </div>
+
+                <button id="btn-super-admin" class="btn btn-admin-trigger">
+                    🛡️ Super Admin
+                </button>
+
+                <button id="btn-bloquear-ahora" class="btn btn-lock-trigger" title="Bloquear pantalla y exigir protocolo">
+                    🔒
+                </button>
             </div>
         </header>
 
         <!-- PANEL PRINCIPAL -->
         <main class="main-panel">
 
-            <!-- BARRA DE BÚSQUEDA + HISTORIAL (del boceto: search + botón historial) -->
+            <!-- RESUMEN DE KPIs -->
+            <section class="kpi-grid" aria-label="Indicadores operativos">
+                <div class="kpi-card">
+                    <span class="kpi-label">Trabajos</span>
+                    <strong id="kpi-total-trabajos" class="kpi-value">0</strong>
+                </div>
+                <div class="kpi-card kpi-danger">
+                    <span class="kpi-label">Riesgo Alto</span>
+                    <strong id="kpi-riesgo-alto" class="kpi-value">0</strong>
+                </div>
+                <div class="kpi-card kpi-warn">
+                    <span class="kpi-label">Activos / Pend.</span>
+                    <strong id="kpi-pendientes" class="kpi-value">0</strong>
+                </div>
+                <div class="kpi-card kpi-success">
+                    <span class="kpi-label">Facturación Est.</span>
+                    <strong id="kpi-facturacion" class="kpi-value">$0</strong>
+                </div>
+            </section>
+
+            <!-- BARRA DE BÚSQUEDA + HISTORIAL -->
             <section class="search-section">
                 <div class="search-wrap">
                     <span class="search-icon-inner">🔍</span>
-                    <input type="text" id="input-busqueda" placeholder="Buscar por nombre o ID de cliente..." autocomplete="off">
-                    <button id="btn-limpiar-busqueda" class="btn-clear hidden">✕</button>
+                    <input type="text" id="input-busqueda" placeholder="Buscar por cliente, ID, dirección o avería..." autocomplete="off">
+                    <button id="btn-limpiar-busqueda" class="btn-clear hidden" aria-label="Limpiar búsqueda">✕</button>
                 </div>
                 <button id="btn-historial" class="btn btn-outline">
                     📋 Historial
                 </button>
             </section>
 
-            <!-- ACCIONES PRINCIPALES (del boceto: Agregar Cliente + Datos) -->
+            <!-- FILTROS MULTIOFICIO / RIESGO / ESTADO -->
+            <section class="filters-section">
+                <select id="filtro-oficio" class="filter-select" aria-label="Filtrar por oficio">
+                    <option value="">Todos los oficios</option>
+                </select>
+                <select id="filtro-riesgo" class="filter-select" aria-label="Filtrar por riesgo">
+                    <option value="">Todos los riesgos</option>
+                    <option value="RIESGO_ALTO">🔴 Riesgo Alto</option>
+                    <option value="RIESGO_BAJO">🟡 Riesgo Bajo</option>
+                    <option value="SEGURO">🟢 Seguro</option>
+                </select>
+                <select id="filtro-estado" class="filter-select" aria-label="Filtrar por estado">
+                    <option value="">Todos los estados</option>
+                    <option value="PENDIENTE">Pendiente</option>
+                    <option value="EN PROCESO">En Proceso</option>
+                    <option value="FINALIZADO">Finalizado</option>
+                </select>
+            </section>
+
+            <!-- ACCIONES PRINCIPALES -->
             <section class="actions-section">
                 <button id="btn-abrir-alta" class="btn btn-primary-action">
                     <span class="btn-icon">＋</span>
-                    <span>Agregar Cliente</span>
+                    <span>Agregar Cliente / Trabajo</span>
                 </button>
                 <button id="btn-exportar" class="btn btn-secondary-action">
-                    <span class="btn-icon">📥</span>
-                    <span>Exportar PDF</span>
+                    <span class="btn-icon">📄</span>
+                    <span>Exportar Reporte PDF</span>
                 </button>
             </section>
 
-            <!-- LISTA DE TRABAJOS CON SEMÁFORO DE PRIORIDAD (del boceto) -->
+            <!-- LISTA DE TRABAJOS CON SEMÁFORO DE PRIORIDAD -->
             <section class="jobs-section">
                 <div class="section-header">
-                    <h2>Trabajos en Curso</h2>
+                    <h2>Trabajos y Servicios</h2>
                     <div class="legend-semaforo">
                         <span class="leg-dot dot-red"></span><span>Riesgo Alto</span>
                         <span class="leg-dot dot-amber"></span><span>Riesgo Bajo</span>
                         <span class="leg-dot dot-green"></span><span>Seguro</span>
                     </div>
                 </div>
-                <div id="contenedor-resultados" class="jobs-list">
-                    <div class="empty-state">
-                        <p>Use el buscador o muestre todos los registros.</p>
-                        <button id="btn-mostrar-todos" class="btn btn-ghost">Ver todos los clientes</button>
-                    </div>
-                </div>
+                <div id="contenedor-resultados" class="jobs-list"></div>
             </section>
 
         </main>
     </div>
 
     <!-- ============================
-         MODAL FORMULARIO CLIENTE
-         (del boceto: Datos → Contacto + Ubicación + Descripción + checkbox Detalles)
+         MODAL FORMULARIO CLIENTE / TRABAJO
          ============================ -->
     <div id="modal-formulario" class="modal-overlay hidden">
         <div class="modal-form">
             <div class="modal-form-header">
-                <h3 id="form-title">Agregar Cliente</h3>
-                <button id="btn-cerrar-form" class="btn-close">✕</button>
+                <h3 id="form-title">Agregar Cliente y Trabajo</h3>
+                <button id="btn-cerrar-form" class="btn-close" aria-label="Cerrar">✕</button>
             </div>
 
             <form id="form-cliente-trabajo" autocomplete="off">
                 <input type="hidden" id="form-id">
 
-                <!-- BLOQUE: + DATOS (contacto + ubicación) -->
                 <div class="form-block">
                     <div class="form-block-label">
                         <span class="block-num">01</span> Datos del Cliente
@@ -151,18 +202,35 @@
                     </div>
                     <div class="form-field">
                         <label for="form-direccion">Ubicación / Dirección</label>
-                        <input type="text" id="form-direccion" required placeholder="Ej. Av. Siempreviva 742, Tucumán">
+                        <input type="text" id="form-direccion" required placeholder="Ej. Av. Sarmiento 100, Tucumán">
                     </div>
                 </div>
 
-                <!-- BLOQUE: DESCRIPCIÓN + checkbox Detalles de los arreglos -->
                 <div class="form-block">
                     <div class="form-block-label">
-                        <span class="block-num">02</span> Descripción del Trabajo
+                        <span class="block-num">02</span> Asignación y Descripción
+                    </div>
+                    <div class="form-row-2">
+                        <div class="form-field">
+                            <label for="form-tecnico">Técnico Asignado (Oficio)</label>
+                            <div class="select-semaforo-wrap">
+                                <select id="form-tecnico" required></select>
+                            </div>
+                        </div>
+                        <div class="form-field">
+                            <label for="form-estado">Estado Operativo</label>
+                            <div class="select-semaforo-wrap">
+                                <select id="form-estado" required>
+                                    <option value="PENDIENTE">PENDIENTE</option>
+                                    <option value="EN PROCESO">EN PROCESO</option>
+                                    <option value="FINALIZADO">FINALIZADO</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                     <div class="form-field">
                         <label for="form-descripcion">Descripción de la avería o trabajo</label>
-                        <textarea id="form-descripcion" required placeholder="Detalle técnico de la intervención eléctrica..."></textarea>
+                        <textarea id="form-descripcion" required placeholder="Detalle técnico de la intervención..."></textarea>
                     </div>
                     <label class="check-item check-item-form">
                         <input type="checkbox" id="chk-detalles-arreglos">
@@ -171,7 +239,6 @@
                     </label>
                 </div>
 
-                <!-- BLOQUE: PRIORIDAD SEMÁFORO + MONTO -->
                 <div class="form-block">
                     <div class="form-block-label">
                         <span class="block-num">03</span> Prioridad y Presupuesto
@@ -183,7 +250,7 @@
                                 <select id="form-seguridad" required>
                                     <option value="SEGURO">🟢 SEGURO — Instalación normalizada</option>
                                     <option value="RIESGO_BAJO">🟡 RIESGO BAJO — Falta mantenimiento</option>
-                                    <option value="RIESGO_ALTO">🔴 RIESGO ALTO — Sin tierra / Térmicas obsoletas</option>
+                                    <option value="RIESGO_ALTO">🔴 RIESGO ALTO — Sin tierra / Falla crítica</option>
                                 </select>
                             </div>
                         </div>
@@ -202,16 +269,106 @@
         </div>
     </div>
 
-    <!-- MODAL HISTORIAL -->
+    <!-- ============================
+         MODAL HISTORIAL
+         ============================ -->
     <div id="modal-historial" class="modal-overlay hidden">
         <div class="modal-form">
             <div class="modal-form-header">
-                <h3>Historial Completo</h3>
-                <button id="btn-cerrar-historial" class="btn-close">✕</button>
+                <h3>Historial de Trabajos y Comprobantes</h3>
+                <button id="btn-cerrar-historial" class="btn-close" aria-label="Cerrar">✕</button>
             </div>
             <div id="historial-contenido" class="historial-list"></div>
         </div>
     </div>
+
+    <!-- ============================
+         MODAL LOGIN SUPER ADMIN
+         ============================ -->
+    <div id="modal-login-admin" class="modal-overlay hidden">
+        <div class="modal-form modal-compact">
+            <div class="modal-form-header">
+                <h3>🛡️ Acceso Super Admin</h3>
+                <button id="btn-cerrar-login" class="btn-close" aria-label="Cerrar">✕</button>
+            </div>
+            <form id="form-login-admin" autocomplete="off">
+                <div class="form-block">
+                    <p class="admin-hint">Ingresá tus credenciales para administrar oficios, técnicos, auditoría y bajas de trabajos.</p>
+                    <div class="form-field">
+                        <label for="login-email">Email de Administrador</label>
+                        <input type="email" id="login-email" required placeholder="admin@electriapp.com">
+                    </div>
+                    <div class="form-field">
+                        <label for="login-password">Contraseña</label>
+                        <input type="password" id="login-password" required placeholder="••••••••">
+                    </div>
+                    <p id="login-error" class="error-msg hidden"></p>
+                    <p class="demo-cred-note">Demo inicial: <code>admin@electriapp.com</code> / <code>Admin#2026</code></p>
+                </div>
+                <div class="form-actions">
+                    <button type="button" id="btn-cancelar-login" class="btn btn-ghost">Cancelar</button>
+                    <button type="submit" class="btn btn-save">Iniciar Sesión</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ============================
+         MODAL PANEL SUPER ADMIN
+         ============================ -->
+    <div id="modal-super-admin" class="modal-overlay hidden">
+        <div class="modal-form modal-wide">
+            <div class="modal-form-header">
+                <div>
+                    <h3>🛡️ Panel Super Admin</h3>
+                    <span id="admin-user-label" class="admin-subtitle"></span>
+                </div>
+                <div class="admin-header-actions">
+                    <button id="btn-logout-admin" class="btn btn-danger-outline">Cerrar Sesión</button>
+                    <button id="btn-cerrar-admin" class="btn-close" aria-label="Cerrar">✕</button>
+                </div>
+            </div>
+
+            <div class="admin-tabs">
+                <button class="admin-tab active" data-tab="tab-oficios">Oficios</button>
+                <button class="admin-tab" data-tab="tab-tecnicos">Técnicos</button>
+                <button class="admin-tab" data-tab="tab-auditoria">Auditoría y Seguridad</button>
+            </div>
+
+            <!-- TAB OFICIOS -->
+            <div id="tab-oficios" class="admin-tab-panel active">
+                <form id="form-nuevo-oficio" class="inline-admin-form">
+                    <input type="text" id="oficio-codigo" required placeholder="Código (ej. REFRIGERACION)">
+                    <input type="text" id="oficio-desc" required placeholder="Descripción (ej. Refrigeración Industrial)">
+                    <button type="submit" class="btn btn-save">＋ Agregar</button>
+                </form>
+                <div id="lista-oficios-admin" class="admin-list"></div>
+            </div>
+
+            <!-- TAB TÉCNICOS -->
+            <div id="tab-tecnicos" class="admin-tab-panel">
+                <form id="form-nuevo-tecnico" class="inline-admin-form inline-admin-form-4">
+                    <input type="text" id="tec-nombre" required placeholder="Nombre completo">
+                    <input type="email" id="tec-email" required placeholder="email@dominio.com">
+                    <input type="tel" id="tec-tel" placeholder="Teléfono">
+                    <select id="tec-oficio" required></select>
+                    <button type="submit" class="btn btn-save">＋ Alta Técnico</button>
+                </form>
+                <div id="lista-tecnicos-admin" class="admin-list"></div>
+            </div>
+
+            <!-- TAB AUDITORÍA -->
+            <div id="tab-auditoria" class="admin-tab-panel">
+                <h4 class="audit-section-title">Protocolos de Seguridad Firmados</h4>
+                <div id="lista-protocolos-admin" class="admin-list"></div>
+                <h4 class="audit-section-title">Eventos de Auditoría</h4>
+                <div id="lista-auditoria-admin" class="admin-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTENEDOR DE NOTIFICACIONES TOAST -->
+    <div id="toast-container" class="toast-container" aria-live="polite"></div>
 
     <script src="script.js"></script>
 </body>
